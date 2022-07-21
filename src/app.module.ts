@@ -14,6 +14,7 @@ import { CompaniesModule } from './companies/companies.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       autoSchemaFile: './graphql/schema.gql',
       driver: ApolloDriver,
+      cache: "bounded"
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
