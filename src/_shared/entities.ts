@@ -11,9 +11,45 @@ export class Company {
   @Field()
   readonly description: string;
 
-  constructor({ id, name, description }) {
+  @Field(() => [Reward], { nullable: false })
+  readonly rewards: Reward[];
+
+  @Field(() => [Risk], { nullable: false })
+  readonly risks: Risk[];
+
+  constructor({ id, name, description, rewards, risks }) {
     this.id = id;
     this.name = name;
+    this.description = description;
+    this.rewards = rewards;
+    this.risks = risks;
+  }
+}
+
+@ObjectType()
+export class Reward {
+  @Field(() => Int)
+  id: number;
+
+  @Field()
+  readonly description: string;
+
+  constructor({ id, description }) {
+    this.id = id;
+    this.description = description;
+  }
+}
+
+@ObjectType()
+export class Risk {
+  @Field(() => Int)
+  id: number;
+
+  @Field()
+  readonly description: string;
+
+  constructor({ id, description }) {
+    this.id = id;
     this.description = description;
   }
 }
@@ -30,6 +66,9 @@ export class Stock {
   readonly ticker: string;
 
   @Field()
+  readonly exchangeName: string;
+
+  @Field()
   readonly lastPrice: number;
 
   @Field()
@@ -44,24 +83,42 @@ export class Stock {
   @Field()
   readonly lastUpdated: string;
 
+  // @Field()
+  // readonly history: [StockPrice];
+
   constructor({
     id,
     companyId,
     ticker,
+    exchangeName,
     lastPrice,
     marketCap,
     priceSevenDays,
     priceOneYear,
     lastUpdated,
+    // history,
   }) {
     this.id = id;
     this.companyId = companyId;
     this.ticker = ticker;
+    this.exchangeName = exchangeName;
     this.lastPrice = lastPrice;
+
     this.marketCap = marketCap;
     this.priceOneYear = priceOneYear;
     this.priceSevenDays = priceSevenDays;
     this.lastUpdated = lastUpdated;
+    // this.history = history;
+  }
+}
+
+@ObjectType()
+export class StockPrice {
+  @Field(() => Int)
+  id: number;
+
+  constructor({ id }) {
+    this.id = id;
   }
 }
 
@@ -79,12 +136,7 @@ export class News {
   @Field()
   readonly text: string;
 
-  constructor({
-    id,
-    companyId,
-    date,
-    text,
-  }) {
+  constructor({ id, companyId, date, text }) {
     this.id = id;
     this.companyId = companyId;
     this.date = date;
