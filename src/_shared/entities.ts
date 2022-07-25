@@ -17,12 +17,24 @@ export class Company {
   @Field(() => [Risk], { nullable: false })
   readonly risks: Risk[];
 
-  constructor({ id, name, description, rewards, risks }) {
+  @Field(() => [Stock], { nullable: false })
+  readonly stocks: Stock[];
+
+  @Field(() => [Company], { nullable: false })
+  readonly competitors: Company[];
+
+  @Field(() => [News], { nullable: false })
+  readonly news: News[];
+
+  constructor({ id, name, description, rewards, risks, stocks, competitors, news }) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.rewards = rewards;
     this.risks = risks;
+    this.stocks = stocks;
+    this.competitors = competitors;
+    this.news = news;
   }
 }
 
@@ -83,8 +95,8 @@ export class Stock {
   @Field()
   readonly lastUpdated: string;
 
-  // @Field()
-  // readonly history: [StockPrice];
+  @Field(() => [StockPrice], { nullable: false })
+  readonly priceHistory: StockPrice[];
 
   constructor({
     id,
@@ -96,7 +108,7 @@ export class Stock {
     priceSevenDays,
     priceOneYear,
     lastUpdated,
-    // history,
+    priceHistory,
   }) {
     this.id = id;
     this.companyId = companyId;
@@ -108,7 +120,7 @@ export class Stock {
     this.priceOneYear = priceOneYear;
     this.priceSevenDays = priceSevenDays;
     this.lastUpdated = lastUpdated;
-    // this.history = history;
+    this.priceHistory = priceHistory;
   }
 }
 
@@ -134,12 +146,12 @@ export class News {
   readonly date: string;
 
   @Field()
-  readonly text: string;
+  readonly description: string;
 
-  constructor({ id, companyId, date, text }) {
+  constructor({ id, companyId, date, description }) {
     this.id = id;
     this.companyId = companyId;
     this.date = date;
-    this.text = text;
+    this.description = description;
   }
 }

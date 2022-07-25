@@ -4,9 +4,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { StocksModule } from './stocks/stocks.module';
-import { NewsModule } from './news/news.module';
+// import { TypeOrmModule } from '@nestjs/typeorm';
 import { CompaniesModule } from './companies/companies.module';
 
 @Module({
@@ -14,17 +12,15 @@ import { CompaniesModule } from './companies/companies.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       autoSchemaFile: './graphql/schema.gql',
       driver: ApolloDriver,
-      cache: "bounded"
+      cache: 'bounded',
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      port: 3306,
-      ...getConnection(),
-      entities: [],
-      // synchronize: true,
-    }),
-    StocksModule,
-    NewsModule,
+    // TypeOrmModule.forRoot({
+    //   type: 'mysql',
+    //   port: 3306,
+    //   ...getConnection(),
+    //   entities: [],
+    //   // synchronize: true,
+    // }),
     CompaniesModule,
   ],
   controllers: [AppController],
@@ -32,11 +28,11 @@ import { CompaniesModule } from './companies/companies.module';
 })
 export class AppModule {}
 
-function getConnection() {
-  return {
-    host: process.env.DB_HOST,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-  };
-}
+// function getConnection() {
+//   return {
+//     host: process.env.DB_HOST,
+//     username: process.env.DB_USERNAME,
+//     password: process.env.DB_PASSWORD,
+//     database: process.env.DB_DATABASE,
+//   };
+// }
