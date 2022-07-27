@@ -1,13 +1,6 @@
-import { random } from 'lodash';
+import { random, range } from 'lodash';
 
-import {
-  Company,
-  News,
-  Stock,
-  StockPrice,
-  Reward,
-  Risk,
-} from 'src/_shared/entities';
+import { Company, News, Stock, Reward, Risk } from 'src/_shared/entities';
 
 export default class DbRepository {
   private readonly _company: Company;
@@ -20,15 +13,19 @@ export default class DbRepository {
     const risks = createRisks();
     const news = createNews(companyId);
     const competitors = createCompetitors(companyId);
+    const snowflakeValueJson = generateSnowflakeValueJson('ticker');
+    const radialBarValueJson = generateRadialBarData();
 
-    this._company = createCompany(
+    this._company = createCompany({
       companyId,
       companyName,
       stocks,
       risks,
       competitors,
       news,
-    );
+      snowflakeValueJson,
+      radialBarValueJson,
+    });
   }
 
   getCompany(id: number): Company {
@@ -36,14 +33,27 @@ export default class DbRepository {
   }
 }
 
-function createCompany(
-  companyId: number,
-  companyName: string,
-  stocks: Stock[] = [],
-  risks: Risk[] = [],
-  competitors: Company[] = [],
-  news: News[] = [],
-) {
+interface CompanyArguments {
+  companyId: number;
+  companyName: string;
+  stocks?: Stock[];
+  risks?: Risk[];
+  competitors?: Company[];
+  news?: News[];
+  snowflakeValueJson: string;
+  radialBarValueJson;
+}
+
+function createCompany({
+  companyId,
+  companyName,
+  stocks,
+  risks,
+  competitors,
+  news,
+  snowflakeValueJson,
+  radialBarValueJson,
+}: CompanyArguments) {
   return new Company({
     id: companyId,
     name: companyName,
@@ -67,15 +77,46 @@ function createCompany(
     stocks,
     competitors,
     news,
+    snowflakeValueJson,
+    radialBarValueJson,
   });
 }
 
 function createCompetitors(companyId: number) {
   return [
-    createCompany(companyId + 1, 'ABN AMRO Bank', createStocks(companyId + 1)),
-    createCompany(companyId + 2, 'Lloyds Banking Group', createStocks(companyId + 2)),
-    createCompany(companyId + 3, 'Oversea-Chinese Banking ', createStocks(companyId + 3)),
-    createCompany(companyId + 4, 'Shanghai Development Bank', createStocks(companyId + 4)),
+    createCompany({
+      companyId: companyId + 1,
+      companyName: 'ABN AMRO Bank',
+      stocks: createStocks(companyId + 1),
+      snowflakeValueJson: generateSnowflakeValueJson('ABN AMRO Bank'),
+      radialBarValueJson: generateRadialBarData(),
+    }),
+
+    createCompany({
+      companyId: companyId + 2,
+      companyName: 'Lloyds Banking Group',
+      stocks: createStocks(companyId + 2),
+      snowflakeValueJson: generateSnowflakeValueJson('Lloyds Banking Group'),
+      radialBarValueJson: generateRadialBarData(),
+    }),
+
+    createCompany({
+      companyId: companyId + 3,
+      companyName: 'Oversea-Chinese Banking',
+      stocks: createStocks(companyId + 3),
+      snowflakeValueJson: generateSnowflakeValueJson('Oversea-Chinese Banking'),
+      radialBarValueJson: generateRadialBarData(),
+    }),
+
+    createCompany({
+      companyId: companyId + 4,
+      companyName: 'Shanghai Development Bank',
+      stocks: createStocks(companyId + 4),
+      snowflakeValueJson: generateSnowflakeValueJson(
+        'Shanghai Development Bank',
+      ),
+      radialBarValueJson: generateRadialBarData(),
+    }),
   ];
 }
 
@@ -91,7 +132,7 @@ function createStocks(companyId: number) {
       priceSevenDays: random(-10, 10),
       priceOneYear: random(-20, 20),
       lastUpdated: '20 Jul, 2022',
-      priceHistory: [new StockPrice({ id: 1 })],
+      priceHistoryJson: JSON.stringify(generateHistory({ start: 9 })),
     }),
   ];
 }
@@ -106,7 +147,112 @@ function createNews(companyId: number) {
       id: 1,
       companyId,
       date: new Date(2022, 5, 18).toDateString(),
-      description: 'ING Groep N.V. commences an Equity Buyback Plan, under the authorization approved on April 25, 2022.',
+      description:
+        'ING Groep N.V. commences an Equity Buyback Plan, under the authorization approved on April 25, 2022.',
     }),
   ];
+}
+
+interface IHistoryData {
+  start: number;
+  dimensions?: number;
+  numberOfYears?: number;
+}
+
+function generateHistory(historyData: IHistoryData) {
+  if (!historyData.dimensions) {
+    historyData.dimensions = 1;
+  }
+
+  if (!historyData.numberOfYears) {
+    historyData.numberOfYears = 1;
+  }
+
+  return range(0, historyData.dimensions).map((item) => {
+    return {
+      id: `INGB ${item}`,
+      data: getData(historyData),
+    };
+  });
+}
+
+function getData(historyData: IHistoryData) {
+  const years = range(0, historyData.numberOfYears)
+    .map((year) => 2022 - year)
+    .sort((a, b) => a - b);
+
+  const months = range(1, 12);
+  const days = range(1, 28, 5);
+
+  const randomValue = historyData.start * 0.4;
+
+  const data: any = [];
+
+  years.forEach((year) => {
+    months.forEach((month) => {
+      days.forEach((day) => {
+        const obj = {
+          x: `${year}-${month}-${day}`,
+          y: (historyData.start + random(-randomValue, randomValue)).toFixed(2),
+        };
+        data.push(obj);
+      });
+    });
+  });
+
+  return data;
+}
+
+function generateSnowflakeValueJson(ticker: string | undefined): string {
+  if (!ticker) {
+    ticker = 'RandomTicker';
+  }
+
+  const tickers = [ticker];
+  const values = ['value', 'future', 'past', 'health', 'dividend'];
+
+  const data = values.map((value) => {
+    const d: Record<string, unknown> = { value };
+    tickers.forEach((tickerValue) => {
+      d[tickerValue] = random(2, 6);
+    });
+
+    return d;
+  });
+
+  return JSON.stringify({ data, keys: tickers });
+}
+
+function generateRadialBarData() {
+  const value = [
+    {
+      id: 'Earnings',
+      data: [
+        {
+          x: 'Value',
+          y: 4.2,
+        },
+      ],
+    },
+    {
+      id: 'Revenue',
+      data: [
+        {
+          x: 'Value',
+          y: 17.04,
+        },
+      ],
+    },
+    {
+      id: 'Market Cap',
+      data: [
+        {
+          x: 'Value',
+          y: 34.48,
+        },
+      ],
+    },
+  ];
+
+  return JSON.stringify(value);
 }

@@ -26,7 +26,24 @@ export class Company {
   @Field(() => [News], { nullable: false })
   readonly news: News[];
 
-  constructor({ id, name, description, rewards, risks, stocks, competitors, news }) {
+  @Field()
+  readonly snowflakeValueJson: string;
+
+  @Field()
+  readonly radialBarValueJson: string;
+
+  constructor({
+    id,
+    name,
+    description,
+    rewards,
+    risks,
+    stocks,
+    competitors,
+    news,
+    snowflakeValueJson,
+    radialBarValueJson
+  }) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -35,6 +52,8 @@ export class Company {
     this.stocks = stocks;
     this.competitors = competitors;
     this.news = news;
+    this.snowflakeValueJson = snowflakeValueJson;
+    this.radialBarValueJson = radialBarValueJson;
   }
 }
 
@@ -95,8 +114,8 @@ export class Stock {
   @Field()
   readonly lastUpdated: string;
 
-  @Field(() => [StockPrice], { nullable: false })
-  readonly priceHistory: StockPrice[];
+  @Field()
+  readonly priceHistoryJson: string;
 
   constructor({
     id,
@@ -108,7 +127,7 @@ export class Stock {
     priceSevenDays,
     priceOneYear,
     lastUpdated,
-    priceHistory,
+    priceHistoryJson,
   }) {
     this.id = id;
     this.companyId = companyId;
@@ -120,17 +139,7 @@ export class Stock {
     this.priceOneYear = priceOneYear;
     this.priceSevenDays = priceSevenDays;
     this.lastUpdated = lastUpdated;
-    this.priceHistory = priceHistory;
-  }
-}
-
-@ObjectType()
-export class StockPrice {
-  @Field(() => Int)
-  id: number;
-
-  constructor({ id }) {
-    this.id = id;
+    this.priceHistoryJson = priceHistoryJson;
   }
 }
 
