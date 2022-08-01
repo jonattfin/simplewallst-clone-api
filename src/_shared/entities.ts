@@ -185,33 +185,42 @@ export class Portfolio {
   @Field()
   readonly snowflakeValueJson: string;
 
-  constructor({ id, name, image, created, description, snowflakeValueJson }) {
+  @Field(() => [CompanyPortfolio], { nullable: false })
+  readonly companies: CompanyPortfolio[];
+
+  constructor({
+    id,
+    name,
+    image,
+    created,
+    description,
+    snowflakeValueJson,
+    companies,
+  }) {
     this.id = id;
     this.name = name;
     this.image = image;
     this.created = created;
     this.description = description;
     this.snowflakeValueJson = snowflakeValueJson;
+    this.companies = companies;
   }
-
-  // @Field(() => [CompanyPortfolio], { nullable: false })
-  // readonly companies: CompanyPortfolio[];
 }
 
-// @ObjectType()
-// export class CompanyPortfolio {
-//   @Field(() => Int)
-//   id: number;
+@ObjectType()
+export class CompanyPortfolio {
+  @Field(() => Int)
+  id: number;
 
-//   @Field(() => Int)
-//   holding: number;
+  @Field(() => Int)
+  holding: number;
 
-//   @Field(() => Int)
-//   annualDividendYield: number;
+  @Field(() => Int)
+  annualDividendYield: number;
 
-//   @Field(() => Int)
-//   annualDividendContribution: number;
+  @Field(() => Int)
+  annualDividendContribution: number;
 
-//   @Field()
-//   readonly company: Company;
-// }
+  @Field()
+  readonly company: Company;
+}

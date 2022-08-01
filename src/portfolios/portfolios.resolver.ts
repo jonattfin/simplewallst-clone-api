@@ -1,8 +1,8 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { PortfoliosService } from './portfolios.service';
-import { Portfolio } from './entities/portfolio.entity';
 import { CreatePortfolioInput } from './dto/create-portfolio.input';
 import { UpdatePortfolioInput } from './dto/update-portfolio.input';
+import { Portfolio } from 'src/_shared/entities';
 
 @Resolver(() => Portfolio)
 export class PortfoliosResolver {

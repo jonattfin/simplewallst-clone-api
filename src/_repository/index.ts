@@ -7,6 +7,7 @@ import {
   Reward,
   Risk,
   Portfolio,
+  CompanyPortfolio,
   // CompanyPortfolio,
 } from 'src/_shared/entities';
 
@@ -53,17 +54,17 @@ export default class DbRepository {
 }
 
 function createPortfolios(companies: Company[]) {
-  // const companiesPortfolios: CompanyPortfolio[] = companies.map(
-  //   (company, index) => {
-  //     return {
-  //       company,
-  //       id: index,
-  //       holding: random(500, 1000),
-  //       annualDividendContribution: random(10, 20),
-  //       annualDividendYield: random(1, 7),
-  //     };
-  //   },
-  // );
+  const companiesPortfolios: CompanyPortfolio[] = companies.map(
+    (company, index) => {
+      return {
+        company,
+        id: index,
+        holding: random(500, 1000),
+        annualDividendContribution: random(10, 20),
+        annualDividendYield: random(1, 7),
+      };
+    },
+  );
 
   const portfolios: Portfolio[] = [
     new Portfolio({
@@ -73,7 +74,7 @@ function createPortfolios(companies: Company[]) {
       created: new Date().toLocaleDateString(),
       description: '',
       snowflakeValueJson: JSON.stringify(generateSnowflakeValueJson('')),
-      // companies: companiesPortfolios,
+      companies: companiesPortfolios,
     }),
     new Portfolio({
       id: 2,
@@ -82,7 +83,7 @@ function createPortfolios(companies: Company[]) {
       created: new Date().toLocaleDateString(),
       description: '',
       snowflakeValueJson: JSON.stringify(generateSnowflakeValueJson('')),
-      // companies: companiesPortfolios,
+      companies: companiesPortfolios,
     }),
     new Portfolio({
       id: 3,
@@ -91,7 +92,7 @@ function createPortfolios(companies: Company[]) {
       created: new Date().toLocaleDateString(),
       description: '',
       snowflakeValueJson: JSON.stringify(generateSnowflakeValueJson('')),
-      // companies: companiesPortfolios,
+      companies: companiesPortfolios,
     }),
   ];
 
