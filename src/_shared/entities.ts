@@ -42,7 +42,7 @@ export class Company {
     competitors,
     news,
     snowflakeValueJson,
-    radialBarValueJson
+    radialBarValueJson,
   }) {
     this.id = id;
     this.name = name;
@@ -164,3 +164,54 @@ export class News {
     this.description = description;
   }
 }
+
+@ObjectType()
+export class Portfolio {
+  @Field(() => Int)
+  id: number;
+
+  @Field()
+  readonly name: string;
+
+  @Field()
+  readonly image: string;
+
+  @Field()
+  readonly created: string;
+
+  @Field()
+  readonly description: string;
+
+  @Field()
+  readonly snowflakeValueJson: string;
+
+  constructor({ id, name, image, created, description, snowflakeValueJson }) {
+    this.id = id;
+    this.name = name;
+    this.image = image;
+    this.created = created;
+    this.description = description;
+    this.snowflakeValueJson = snowflakeValueJson;
+  }
+
+  // @Field(() => [CompanyPortfolio], { nullable: false })
+  // readonly companies: CompanyPortfolio[];
+}
+
+// @ObjectType()
+// export class CompanyPortfolio {
+//   @Field(() => Int)
+//   id: number;
+
+//   @Field(() => Int)
+//   holding: number;
+
+//   @Field(() => Int)
+//   annualDividendYield: number;
+
+//   @Field(() => Int)
+//   annualDividendContribution: number;
+
+//   @Field()
+//   readonly company: Company;
+// }

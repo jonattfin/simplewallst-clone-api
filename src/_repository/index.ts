@@ -1,9 +1,18 @@
 import { random, range } from 'lodash';
 
-import { Company, News, Stock, Reward, Risk } from 'src/_shared/entities';
+import {
+  Company,
+  News,
+  Stock,
+  Reward,
+  Risk,
+  Portfolio,
+  // CompanyPortfolio,
+} from 'src/_shared/entities';
 
 export default class DbRepository {
   private readonly _company: Company;
+  private readonly _portfolios: Portfolio[];
 
   constructor() {
     const companyId = 1;
@@ -26,11 +35,67 @@ export default class DbRepository {
       snowflakeValueJson,
       radialBarValueJson,
     });
+
+    this._portfolios = createPortfolios(competitors);
   }
 
   getCompany(id: number): Company {
     return this._company;
   }
+
+  getPortfolios(): Portfolio[] {
+    return this._portfolios;
+  }
+
+  getPortfolio(id: number): Portfolio {
+    return this._portfolios.find((p) => p.id === id);
+  }
+}
+
+function createPortfolios(companies: Company[]) {
+  // const companiesPortfolios: CompanyPortfolio[] = companies.map(
+  //   (company, index) => {
+  //     return {
+  //       company,
+  //       id: index,
+  //       holding: random(500, 1000),
+  //       annualDividendContribution: random(10, 20),
+  //       annualDividendYield: random(1, 7),
+  //     };
+  //   },
+  // );
+
+  const portfolios: Portfolio[] = [
+    new Portfolio({
+      id: 1,
+      name: 'Accel Partners',
+      image: '/forrest.jpg',
+      created: new Date().toLocaleDateString(),
+      description: '',
+      snowflakeValueJson: JSON.stringify(generateSnowflakeValueJson('')),
+      // companies: companiesPortfolios,
+    }),
+    new Portfolio({
+      id: 2,
+      name: 'ARK Investment Management',
+      image: '/spiderweb.jpg',
+      created: new Date().toLocaleDateString(),
+      description: '',
+      snowflakeValueJson: JSON.stringify(generateSnowflakeValueJson('')),
+      // companies: companiesPortfolios,
+    }),
+    new Portfolio({
+      id: 3,
+      name: 'Bill & Melinda Gates Foundation',
+      image: '/stock.jpg',
+      created: new Date().toLocaleDateString(),
+      description: '',
+      snowflakeValueJson: JSON.stringify(generateSnowflakeValueJson('')),
+      // companies: companiesPortfolios,
+    }),
+  ];
+
+  return portfolios;
 }
 
 interface CompanyArguments {
