@@ -48,6 +48,24 @@ export default class DbRepository {
     return this._portfolios;
   }
 
+  addPortfolio(name: string, currency: string) {
+    const portfolio = new Portfolio({
+      id: random(10, 100),
+      name,
+      currency,
+      image: '/forrest.jpg',
+      created: new Date().toLocaleDateString(),
+      description: '',
+      snowflakeValueJson: JSON.stringify(generateSnowflakeValueJson('')),
+      companies: [],
+    });
+
+    this._portfolios.push(portfolio);
+    console.log(`portfolio with name ${name} was added`)
+
+    return portfolio;
+  }
+
   getPortfolio(id: number): Portfolio {
     return this._portfolios.find((p) => p.id === id);
   }
@@ -71,6 +89,7 @@ function createPortfolios(companies: Company[]) {
       id: 1,
       name: 'Accel Partners',
       image: '/forrest.jpg',
+      currency: "USD",
       created: new Date().toLocaleDateString(),
       description: '',
       snowflakeValueJson: JSON.stringify(generateSnowflakeValueJson('')),
@@ -79,6 +98,7 @@ function createPortfolios(companies: Company[]) {
     new Portfolio({
       id: 2,
       name: 'ARK Investment Management',
+      currency: "USD",
       image: '/spiderweb.jpg',
       created: new Date().toLocaleDateString(),
       description: '',
@@ -88,6 +108,7 @@ function createPortfolios(companies: Company[]) {
     new Portfolio({
       id: 3,
       name: 'Bill & Melinda Gates Foundation',
+      currency: "USD",
       image: '/stock.jpg',
       created: new Date().toLocaleDateString(),
       description: '',

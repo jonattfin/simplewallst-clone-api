@@ -8,7 +8,8 @@ export class PortfoliosService {
   constructor(private repository: DbRepository) {}
 
   create(createPortfolioInput: CreatePortfolioInput) {
-    return 'This action adds a new portfolio';
+    const { name, currency } = createPortfolioInput;
+    return this.repository.addPortfolio(name, currency);
   }
 
   findAll() {

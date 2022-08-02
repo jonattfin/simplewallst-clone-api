@@ -174,6 +174,9 @@ export class Portfolio {
   readonly name: string;
 
   @Field()
+  readonly currency: string;
+
+  @Field()
   readonly image: string;
 
   @Field()
@@ -191,6 +194,7 @@ export class Portfolio {
   constructor({
     id,
     name,
+    currency,
     image,
     created,
     description,
@@ -199,6 +203,7 @@ export class Portfolio {
   }) {
     this.id = id;
     this.name = name;
+    this.currency = currency;
     this.image = image;
     this.created = created;
     this.description = description;

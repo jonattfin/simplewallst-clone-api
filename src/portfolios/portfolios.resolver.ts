@@ -24,8 +24,13 @@ export class PortfoliosResolver {
   }
 
   @Mutation(() => Portfolio)
-  updatePortfolio(@Args('updatePortfolioInput') updatePortfolioInput: UpdatePortfolioInput) {
-    return this.portfoliosService.update(updatePortfolioInput.id, updatePortfolioInput);
+  updatePortfolio(
+    @Args('updatePortfolioInput') updatePortfolioInput: UpdatePortfolioInput,
+  ) {
+    return this.portfoliosService.update(
+      updatePortfolioInput.id,
+      updatePortfolioInput,
+    );
   }
 
   @Mutation(() => Portfolio)
