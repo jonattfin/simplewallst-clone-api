@@ -56,7 +56,7 @@ export default class DbRepository {
       image: '/forrest.jpg',
       created: new Date().toLocaleDateString(),
       description: '',
-      snowflakeValueJson: JSON.stringify(generateSnowflakeValueJson('')),
+      snowflakeValueJson: generateSnowflakeValueJson(''),
       companies: [],
     });
 
@@ -92,7 +92,7 @@ function createPortfolios(companies: Company[]) {
       currency: "USD",
       created: new Date().toLocaleDateString(),
       description: '',
-      snowflakeValueJson: JSON.stringify(generateSnowflakeValueJson('')),
+      snowflakeValueJson: generateSnowflakeValueJson(''),
       companies: companiesPortfolios,
     }),
     new Portfolio({
@@ -102,7 +102,7 @@ function createPortfolios(companies: Company[]) {
       image: '/spiderweb.jpg',
       created: new Date().toLocaleDateString(),
       description: '',
-      snowflakeValueJson: JSON.stringify(generateSnowflakeValueJson('')),
+      snowflakeValueJson: generateSnowflakeValueJson(''),
       companies: companiesPortfolios,
     }),
     new Portfolio({
@@ -112,7 +112,7 @@ function createPortfolios(companies: Company[]) {
       image: '/stock.jpg',
       created: new Date().toLocaleDateString(),
       description: '',
-      snowflakeValueJson: JSON.stringify(generateSnowflakeValueJson('')),
+      snowflakeValueJson: generateSnowflakeValueJson(''),
       companies: companiesPortfolios,
     }),
   ];
