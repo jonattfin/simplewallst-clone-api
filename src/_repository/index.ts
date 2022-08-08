@@ -1,10 +1,11 @@
+import _ from 'lodash';
 import { random, range } from 'lodash';
+import { faker } from '@faker-js/faker';
 
 import {
   Company,
   News,
   Stock,
-  Reward,
   Risk,
   Portfolio,
   CompanyPortfolio,
@@ -12,44 +13,38 @@ import {
 } from 'src/_shared/entities';
 
 export default class DbRepository {
-  private readonly _company: Company;
-  private readonly _portfolios: Portfolio[];
+  private readonly _portfolios: Portfolio[] = [];
+  private readonly _companies: Company[] = [];
 
   constructor() {
-    const companyId = 1;
-    const companyName = 'ING Group';
-
-    const stocks = createStocks(companyId);
-    const risks = createRisks();
-    const news = createNews(companyId);
-    const competitors = createCompetitors(companyId);
-    const snowflakeValueJson = generateSnowflakeValueJson('ticker');
-    const radialBarValueJson = generateRadialBarData();
-
-    this._company = createCompany({
-      companyId,
-      companyName,
-      stocks,
-      risks,
-      competitors,
-      news,
-      snowflakeValueJson,
-      radialBarValueJson,
+    this._companies = range(1, 10).map((element) => {
+      return createCompany({
+        companyId: element,
+        companyName: faker.company.companyName(),
+        competitors: createCompetitors(element),
+      });
     });
+    this._portfolios = createPortfolios(this._companies);
+  }
 
-    this._portfolios = createPortfolios(competitors);
+  getCompanies() {
+    return this._companies;
   }
 
   getCompany(id: number): Company {
-    return this._company;
+    return this._companies.find((c) => c.id == id);
   }
 
-  getPortfolios(): Portfolio[] {
+  getPortfolios() {
     return this._portfolios;
   }
 
+  getPortfolio(id: number) {
+    return this._portfolios.find((p) => p.id === id);
+  }
+
   addPortfolio(name: string, currency: string) {
-    const portfolio = new Portfolio({
+    const portfolio = {
       id: random(10, 100),
       name,
       currency,
@@ -58,20 +53,16 @@ export default class DbRepository {
       description: '',
       snowflakeValueJson: generateSnowflakeValueJson(''),
       companies: [],
-    });
+    };
 
     this._portfolios.push(portfolio);
-    console.log(`portfolio with name ${name} was added`)
+    console.log(`portfolio with name ${name} was added`);
 
     return portfolio;
   }
-
-  getPortfolio(id: number): Portfolio {
-    return this._portfolios.find((p) => p.id === id);
-  }
 }
 
-function createPortfolios(companies: Company[]) {
+function createPortfolios(companies: Company[]): Portfolio[] {
   const companiesPortfolios: CompanyPortfolio[] = companies.map(
     (company, index) => {
       return {
@@ -84,81 +75,73 @@ function createPortfolios(companies: Company[]) {
     },
   );
 
-  const portfolios: Portfolio[] = [
-    new Portfolio({
+  return [
+    {
       id: 1,
       name: 'Accel Partners',
       image: '/forrest.jpg',
-      currency: "USD",
+      currency: 'USD',
       created: new Date().toLocaleDateString(),
       description: '',
       snowflakeValueJson: generateSnowflakeValueJson(''),
       companies: companiesPortfolios,
-    }),
-    new Portfolio({
+    },
+    {
       id: 2,
       name: 'ARK Investment Management',
-      currency: "USD",
+      currency: 'USD',
       image: '/spiderweb.jpg',
       created: new Date().toLocaleDateString(),
       description: '',
       snowflakeValueJson: generateSnowflakeValueJson(''),
       companies: companiesPortfolios,
-    }),
-    new Portfolio({
+    },
+    {
       id: 3,
       name: 'Bill & Melinda Gates Foundation',
-      currency: "USD",
+      currency: 'USD',
       image: '/stock.jpg',
       created: new Date().toLocaleDateString(),
       description: '',
       snowflakeValueJson: generateSnowflakeValueJson(''),
       companies: companiesPortfolios,
-    }),
+    },
   ];
-
-  return portfolios;
-}
-
-interface CompanyArguments {
-  companyId: number;
-  companyName: string;
-  stocks?: Stock[];
-  risks?: Risk[];
-  competitors?: Company[];
-  news?: News[];
-  snowflakeValueJson: string;
-  radialBarValueJson;
 }
 
 function createCompany({
   companyId,
   companyName,
-  stocks,
-  risks,
   competitors,
-  news,
-  snowflakeValueJson,
-  radialBarValueJson,
-}: CompanyArguments) {
-  return new Company({
+}: {
+  companyId: number;
+  companyName: string;
+  competitors: Company[];
+}) : Company {
+  const stocks = createStocks({ companyId, companyName });
+  const risks = createRisks();
+  const news = createNews({ companyId, companyName });
+  const snowflakeValueJson = generateSnowflakeValueJson(companyName);
+  const radialBarValueJson = generateRadialBarData();
+
+  return {
     id: companyId,
     name: companyName,
-    description:
-      'ING Groep N.V., a financial institution, provides various banking products and services in the Netherlands, Belgium, Germany, Poland, Rest of Europe, North America, Latin America, Asia, and Australia.',
+    description: `${companyName}, a financial institution, provides various banking products and services in the Netherlands, Belgium, Germany, Poland, Rest of Europe, 
+      North America, Latin America, Asia, and Australia.`,
     rewards: [
-      new Reward({
+      {
         id: 1,
         description: 'Trading at 67% below our estimate of its fair value',
-      }),
-      new Reward({
+      },
+      {
         id: 2,
         description: 'Earnings are forecast to grow 12.35% per year',
-      }),
-      new Reward({
+      },
+      {
         id: 3,
         description: 'Earnings grew by 48.9% over the past year',
-      }),
+      },
     ],
     risks,
     stocks,
@@ -166,53 +149,49 @@ function createCompany({
     news,
     snowflakeValueJson,
     radialBarValueJson,
-  });
+  };
 }
 
-function createCompetitors(companyId: number) {
+function createCompetitors(companyId: number) : Company[] {
   return [
     createCompany({
       companyId: companyId + 1,
       companyName: 'ABN AMRO Bank',
-      stocks: createStocks(companyId + 1),
-      snowflakeValueJson: generateSnowflakeValueJson('ABN AMRO Bank'),
-      radialBarValueJson: generateRadialBarData(),
+      competitors: [],
     }),
 
     createCompany({
       companyId: companyId + 2,
       companyName: 'Lloyds Banking Group',
-      stocks: createStocks(companyId + 2),
-      snowflakeValueJson: generateSnowflakeValueJson('Lloyds Banking Group'),
-      radialBarValueJson: generateRadialBarData(),
+      competitors: [],
     }),
 
     createCompany({
       companyId: companyId + 3,
       companyName: 'Oversea-Chinese Banking',
-      stocks: createStocks(companyId + 3),
-      snowflakeValueJson: generateSnowflakeValueJson('Oversea-Chinese Banking'),
-      radialBarValueJson: generateRadialBarData(),
+      competitors: [],
     }),
 
     createCompany({
       companyId: companyId + 4,
       companyName: 'Shanghai Development Bank',
-      stocks: createStocks(companyId + 4),
-      snowflakeValueJson: generateSnowflakeValueJson(
-        'Shanghai Development Bank',
-      ),
-      radialBarValueJson: generateRadialBarData(),
+      competitors: [],
     }),
   ];
 }
 
-function createStocks(companyId: number) {
+function createStocks({
+  companyId,
+  companyName,
+}: {
+  companyId: number;
+  companyName: string;
+}): Stock[] {
   return [
-    new Stock({
+    {
       id: random(1, 100),
       companyId,
-      ticker: 'INGA',
+      ticker: companyName.substring(0, 4).toUpperCase(),
       exchangeName: 'ENXTAM',
       lastPrice: random(10, 100),
       marketCap: random(50, 100),
@@ -220,24 +199,33 @@ function createStocks(companyId: number) {
       priceOneYear: random(-20, 20),
       lastUpdated: '20 Jul, 2022',
       priceHistoryJson: JSON.stringify(generateHistory({ start: 9 })),
-    }),
+    },
   ];
 }
 
-function createRisks() {
-  return [new Risk({ id: 1, description: 'Unstable dividend track record' })];
+function createRisks(): Risk[] {
+  return [{ id: 1, description: 'Unstable dividend track record' }];
 }
 
-function createNews(companyId: number) {
-  return [
-    new News({
-      id: 1,
+function createNews({
+  companyId,
+  companyName,
+}: {
+  companyId: number;
+  companyName: string;
+}): News[] {
+  const news = range(1, 5).map((element) => {
+    const date = faker.date.past().toDateString();
+
+    return {
+      id: element,
       companyId,
-      date: new Date(2022, 5, 18).toDateString(),
-      description:
-        'ING Groep N.V. commences an Equity Buyback Plan, under the authorization approved on April 25, 2022.',
-    }),
-  ];
+      date,
+      description: `${companyName} commences an Equity Buyback Plan, under the authorization approved on ${date}`,
+    };
+  });
+
+  return news;
 }
 
 interface IHistoryData {

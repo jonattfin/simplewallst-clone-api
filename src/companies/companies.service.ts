@@ -12,7 +12,7 @@ export class CompaniesService {
   }
 
   findAll() {
-    return [this.repository.getCompany(1)];
+    return this.repository.getCompanies();
   }
 
   findOne(id: number) {

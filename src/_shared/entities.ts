@@ -31,30 +31,6 @@ export class Company {
 
   @Field()
   readonly radialBarValueJson: string;
-
-  constructor({
-    id,
-    name,
-    description,
-    rewards,
-    risks,
-    stocks,
-    competitors,
-    news,
-    snowflakeValueJson,
-    radialBarValueJson,
-  }) {
-    this.id = id;
-    this.name = name;
-    this.description = description;
-    this.rewards = rewards;
-    this.risks = risks;
-    this.stocks = stocks;
-    this.competitors = competitors;
-    this.news = news;
-    this.snowflakeValueJson = snowflakeValueJson;
-    this.radialBarValueJson = radialBarValueJson;
-  }
 }
 
 @ObjectType()
@@ -64,11 +40,6 @@ export class Reward {
 
   @Field()
   readonly description: string;
-
-  constructor({ id, description }) {
-    this.id = id;
-    this.description = description;
-  }
 }
 
 @ObjectType()
@@ -78,11 +49,6 @@ export class Risk {
 
   @Field()
   readonly description: string;
-
-  constructor({ id, description }) {
-    this.id = id;
-    this.description = description;
-  }
 }
 
 @ObjectType()
@@ -116,31 +82,6 @@ export class Stock {
 
   @Field()
   readonly priceHistoryJson: string;
-
-  constructor({
-    id,
-    companyId,
-    ticker,
-    exchangeName,
-    lastPrice,
-    marketCap,
-    priceSevenDays,
-    priceOneYear,
-    lastUpdated,
-    priceHistoryJson,
-  }) {
-    this.id = id;
-    this.companyId = companyId;
-    this.ticker = ticker;
-    this.exchangeName = exchangeName;
-    this.lastPrice = lastPrice;
-
-    this.marketCap = marketCap;
-    this.priceOneYear = priceOneYear;
-    this.priceSevenDays = priceSevenDays;
-    this.lastUpdated = lastUpdated;
-    this.priceHistoryJson = priceHistoryJson;
-  }
 }
 
 @ObjectType()
@@ -156,13 +97,6 @@ export class News {
 
   @Field()
   readonly description: string;
-
-  constructor({ id, companyId, date, description }) {
-    this.id = id;
-    this.companyId = companyId;
-    this.date = date;
-    this.description = description;
-  }
 }
 
 @ObjectType()
@@ -190,26 +124,6 @@ export class Portfolio {
 
   @Field(() => [CompanyPortfolio], { nullable: false })
   readonly companies: CompanyPortfolio[];
-
-  constructor({
-    id,
-    name,
-    currency,
-    image,
-    created,
-    description,
-    snowflakeValueJson,
-    companies,
-  }) {
-    this.id = id;
-    this.name = name;
-    this.currency = currency;
-    this.image = image;
-    this.created = created;
-    this.description = description;
-    this.snowflakeValueJson = snowflakeValueJson;
-    this.companies = companies;
-  }
 }
 
 @ObjectType()
