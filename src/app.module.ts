@@ -14,6 +14,9 @@ import { PortfoliosModule } from './portfolios/portfolios.module';
       autoSchemaFile: './graphql/schema.gql',
       driver: ApolloDriver,
       cache: 'bounded',
+      cors: {
+        origin: "https://www.codeplaybook.com",
+      }
     }),
     // TypeOrmModule.forRoot({
     //   type: 'mysql',
